@@ -1,6 +1,7 @@
 <script setup>
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+const input = ref('')
 </script>
 
 <template>
@@ -21,6 +22,7 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
+    <el-input v-model="input" placeholder="Please input" />
   </header>
 
   <RouterView />
