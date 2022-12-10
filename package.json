@@ -10,11 +10,13 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
     "axios": "^1.2.0",
     "default-passive-events": "^2.0.0",
     "element-plus": "^2.2.25",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.0.26",
     "sass": "^1.56.1",
     "vue": "^3.2.45",
