@@ -11,3 +11,10 @@ export function updateProperties(id, page) {
     },
   })
 }
+
+export function getAllPages() {
+  return httpRequest({
+    url: 'pages/getAllPages',
+    method: 'post',
+  })
+}

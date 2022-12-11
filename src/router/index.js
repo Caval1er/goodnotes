@@ -9,8 +9,13 @@ const router = createRouter({
     },
     {
       path: '/table',
-      name: 'Tome',
+      name: 'Table',
       component: () => import('@/views/Table/index.vue'),
+    },
+    {
+      path: '/list',
+      name: 'List',
+      component: () => import('@/views/List/index.vue'),
     },
   ],
 })

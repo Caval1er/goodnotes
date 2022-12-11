@@ -43,7 +43,7 @@
                 </div>
 
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -71,7 +71,7 @@
                   /></el-icon>
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -114,7 +114,7 @@
                 <div v-else class="editable-cell-text-wrapper">
                   <template v-if="column.type === 'Multip_Select'">
                     <el-tag
-                      v-for="tag in scope.row[column.name]"
+                      v-for="tag in scope.row.properties[column.name]"
                       :key="tag.id"
                       >{{ tag.value }}</el-tag
                     ></template
@@ -154,7 +154,7 @@
                   /></el-icon>
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -186,7 +186,7 @@
                   /></el-icon>
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -218,7 +218,7 @@
                   /></el-icon>
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -250,7 +250,7 @@
                   /></el-icon>
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
-                  <span>{{ scope.row[column.name] }}</span>
+                  <span>{{ scope.row.properties[column.name] }}</span>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
                   /></el-icon>
@@ -276,7 +276,7 @@
                 </div>
                 <div v-else class="editable-cell-text-wrapper">
                   <el-checkbox
-                    v-model="scope.row[column.name]"
+                    v-model="scope.row.properties[column.name]"
                     size="large"
                     disabled
                   />
@@ -296,7 +296,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { getSingleCollectionById } from '@/api/collection/index'
-import { updateProperties } from '@/api/page/index'
+import { updateProperties, getAllPages } from '@/api/page/index'
 import { cloneDeep } from 'lodash-es'
 const tableColumnScheme = reactive([])
 const formData = reactive({
@@ -312,55 +312,14 @@ const formData = reactive({
     ],
   },
 })
-const tableData = reactive([
-  {
-    id: 1,
-    title: 'title1',
-    date: '2022-12-01 17:46:38',
-    tags: [{ id: 1, value: '1' }],
-    number: 0,
-    email: '',
-    url: '',
-    text: '',
-  },
-  {
-    id: 2,
-    title: 'title1',
-    date: '2022-12-01 17:46:36',
-    tags: [{ id: 1, value: '1' }],
-    number: 0,
-    email: '',
-    url: '',
-    text: '',
-  },
-  {
-    id: 3,
-    title: 'title1',
-    date: '2022-12-01 17:46:38',
 
-    tags: [{ id: 1, value: '1' }],
-    number: 0,
-    email: '',
-    url: '',
-    text: '',
-  },
-  {
-    id: 4,
-    title: 'title1',
-    date: '2022-12-01 17:46:38',
-
-    tags: [{ id: 1, value: '1' }],
-    number: 0,
-    email: '',
-    url: '',
-    text: '',
-  },
-])
 const formRef = ref(null)
 onMounted(() => {
   getSingleCollectionById(1, 1).then((res) => {
     tableColumnScheme.push(...JSON.parse(res.schema))
-    formData.data.push(...tableData)
+  })
+  getAllPages().then((res) => {
+    formData.data.push(...res)
   })
 })
 
@@ -369,26 +328,35 @@ const toFristLetterUpper = (s) => {
 }
 
 const edit = (id, field) => {
-  const obj = tableData.filter((item) => id === item.id)[0]
-  if (obj && Object.prototype.hasOwnProperty.call(obj, field)) {
+  const rowData = formData.data.filter((item) => id === item.id)[0]
+  console.log(rowData)
+  if (
+    rowData &&
+    rowData.properties &&
+    Object.prototype.hasOwnProperty.call(rowData.properties, field)
+  ) {
     if (Object.prototype.hasOwnProperty.call(formData.editableData, id)) {
-      formData.editableData[id][field] = cloneDeep(obj[field])
+      formData.editableData[id][field] = cloneDeep(rowData.properties[field])
     } else {
       formData.editableData[id] = {}
-      formData.editableData[id][field] = cloneDeep(obj[field])
+      formData.editableData[id][field] = cloneDeep(rowData.properties[field])
     }
   }
 }
 const save = (id, field) => {
-  const obj = tableData.filter((item) => id === item.id)[0]
-  if (obj && Object.prototype.hasOwnProperty.call(obj, field)) {
-    obj[field] = formData.editableData[id][field]
+  const rowData = formData.data.filter((item) => id === item.id)[0]
+  if (
+    rowData &&
+    rowData.properties &&
+    Object.prototype.hasOwnProperty.call(rowData.properties, field)
+  ) {
+    rowData.properties[field] = formData.editableData[id][field]
   }
   delete formData.editableData[id][field]
   formRef.value.validate((valid, prop) => {
     if (valid) {
       console.log(valid, prop)
-      handleUpdate(id, obj)
+      handleUpdate(id, rowData.properties)
     } else {
       console.log('1')
     }
