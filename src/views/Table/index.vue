@@ -316,7 +316,7 @@ const formData = reactive({
 const formRef = ref(null)
 onMounted(() => {
   getSingleCollectionById(1, 1).then((res) => {
-    tableColumnScheme.push(...JSON.parse(res.schema))
+    tableColumnScheme.push(...res.schema)
   })
   getAllPages().then((res) => {
     formData.data.push(...res)

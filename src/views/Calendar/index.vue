@@ -1,15 +1,5 @@
 <template>
-  <div class="list-view-container">
-    <List :data-source="data">
-      <template #renderItem="{ item }">
-        <list-item :schema="collectionSchema.schema" :rowData="item">
-          <template #title
-            ><span>{{ item.title }}</span></template
-          >
-        </list-item>
-      </template>
-    </List>
-  </div>
+  <div class="calendar-container"><Calendar :data-source="data" /></div>
 </template>
 
 <script setup>

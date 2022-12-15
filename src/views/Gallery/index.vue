@@ -1,14 +1,10 @@
 <template>
-  <div class="list-view-container">
-    <List :data-source="data">
+  <div class="gallery-view-container">
+    <Gallery :data-source="data">
       <template #renderItem="{ item }">
-        <list-item :schema="collectionSchema.schema" :rowData="item">
-          <template #title
-            ><span>{{ item.title }}</span></template
-          >
-        </list-item>
-      </template>
-    </List>
+        <gallery-item :schema="collectionSchema.schema" :property="item">
+        </gallery-item></template
+    ></Gallery>
   </div>
 </template>
 

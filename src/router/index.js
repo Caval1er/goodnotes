@@ -17,6 +17,16 @@ const router = createRouter({
       name: 'List',
       component: () => import('@/views/List/index.vue'),
     },
+    {
+      path: '/calendar',
+      name: 'Calendar',
+      component: () => import('@/views/Calendar/index.vue'),
+    },
+    {
+      path: '/gallery',
+      name: 'Gallery',
+      component: () => import('@/views/Gallery/index.vue'),
+    },
   ],
 })
 
