@@ -1,12 +1,12 @@
 <template>
   <div class="card-container">
-    <el-card shadow="hover"> {{ props.property.date }} </el-card>
+    <el-card shadow="hover"> {{ props.properties.date }} </el-card>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  property: {
+  properties: {
     type: Object,
     default() {
       return {}
