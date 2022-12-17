@@ -2,7 +2,7 @@
   <div class="list-container">
     <ul class="list-container-body">
       <li v-for="item in props.dataSource" :key="item.id">
-        <slot name="renderItem" :item="item.properties" />
+        <slot name="renderItem" :item="item" />
       </li>
     </ul>
   </div>

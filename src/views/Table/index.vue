@@ -44,9 +44,14 @@
 
                 <div v-else class="editable-cell-text-wrapper">
                   <span>{{ scope.row.properties[column.name] }}</span>
-                  <el-icon @click="edit(scope.row.id, column.name)"
-                    ><Edit
-                  /></el-icon>
+                  <div class="editable-cell-text-icon">
+                    <el-icon @click="openDrawer(scope.row.id)"
+                      ><Postcard
+                    /></el-icon>
+                    <el-icon @click="edit(scope.row.id, column.name)"
+                      ><Edit
+                    /></el-icon>
+                  </div>
                 </div>
               </div>
             </template>
@@ -290,11 +295,17 @@
         </el-table-column>
       </el-table>
     </el-form>
+    <drawer-form
+      ref="drawerRef"
+      v-model="rowData"
+      :rules="formData.rules"
+      :schema="tableColumnScheme"
+    />
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, computed } from 'vue'
 import { getSingleCollectionById } from '@/api/collection/index'
 import { updateProperties, getAllPages } from '@/api/page/index'
 import { cloneDeep } from 'lodash-es'
@@ -313,6 +324,14 @@ const formData = reactive({
   },
 })
 
+const currentIndex = ref(-1)
+const drawerRef = ref(null)
+const rowData = computed({
+  get: () => formData.data.find((item) => item.id === currentIndex.value),
+  set: (newVal) => {
+    formData.data.filter((item) => item.id === currentIndex.value)[0] = newVal
+  },
+})
 const formRef = ref(null)
 onMounted(() => {
   getSingleCollectionById(1, 1).then((res) => {
@@ -322,6 +341,12 @@ onMounted(() => {
     formData.data.push(...res)
   })
 })
+
+const openDrawer = (id) => {
+  currentIndex.value = id
+  console.log(currentIndex.value)
+  drawerRef.value.handleOpen()
+}
 
 const toFristLetterUpper = (s) => {
   return s.replace(s.charAt(0), s.charAt(0).toUpperCase())
@@ -400,13 +425,16 @@ const handleUpdate = (id, page) => {
             display: flex;
             align-items: center;
             justify-content: space-between;
-
-            .el-icon {
-              display: none;
-              padding: 0px 2px 0px 5px;
-              cursor: pointer;
-              &:hover {
-                color: #108ee9;
+            .editable-cell-text-icon {
+              display: flex;
+              .el-icon {
+                display: none;
+                font-size: 20px;
+                padding: 0px 2px 0px 5px;
+                cursor: pointer;
+                &:hover {
+                  color: #108ee9;
+                }
               }
             }
           }

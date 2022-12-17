@@ -1,5 +1,7 @@
 <template>
-  <div class="calendar-container"><Calendar :data-source="data" /></div>
+  <div class="calendar-container">
+    <Calendar :data-source="data" :schema="collectionSchema.schema" />
+  </div>
 </template>
 
 <script setup>
@@ -7,7 +9,7 @@ import { onMounted, reactive } from 'vue'
 import { getAllPages } from '@/api/page/index'
 import { getSingleCollectionById } from '@/api/collection/index'
 const data = reactive([])
-const collectionSchema = reactive({})
+const collectionSchema = reactive({ schema: [] })
 onMounted(() => {
   getAllPages().then((res) => {
     data.push(...res)

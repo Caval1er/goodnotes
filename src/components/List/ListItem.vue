@@ -68,9 +68,9 @@
 <script setup>
 const props = defineProps({
   schema: {
-    type: Object,
+    type: Array,
     default() {
-      return {}
+      return []
     },
   },
   rowData: {

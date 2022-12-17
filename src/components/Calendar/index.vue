@@ -21,13 +21,22 @@
 
     <template #date-cell="{ data }">
       <div v-for="item in computedDate(data.day)" :key="item.id">
-        <calendar-item :properties="item.properties"></calendar-item></div
+        <calendar-item
+          :properties="item.properties"
+          @click="openDrawer(item.id)"
+        ></calendar-item></div
     ></template>
   </el-calendar>
+  <drawer-form
+    ref="drawerRef"
+    v-model="rowData"
+    :rules="rules"
+    :schema="props.schema"
+  />
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import dayjs from 'dayjs'
 const calendarRef = ref()
 const selectDate = (val) => {
@@ -40,14 +49,16 @@ const props = defineProps({
     default() {
       return []
     },
-    schema: {
-      type: Object,
-      default() {
-        return {}
-      },
+  },
+  schema: {
+    type: Array,
+    default() {
+      return {}
     },
   },
 })
+
+const rules = reactive({})
 
 const computedDate = computed(() => {
   return function (date) {
@@ -55,6 +66,20 @@ const computedDate = computed(() => {
       return date === dayjs(item.properties.date).format('YYYY-MM-DD')
     })
   }
+})
+const currentIndex = ref(-1)
+const drawerRef = ref(null)
+const openDrawer = (id) => {
+  currentIndex.value = id
+  console.log(currentIndex.value)
+  drawerRef.value.handleOpen()
+}
+const rowData = computed({
+  get: () => props.dataSource.find((item) => item.id === currentIndex.value),
+  set: (newVal) => {
+    props.dataSource.filter((item) => item.id === currentIndex.value)[0] =
+      newVal
+  },
 })
 </script>
 

@@ -6,7 +6,15 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: () => import('@/views/Home/index.vue'),
+      component: Layout,
+      redirect: '/dashboard',
+      children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          component: () => import('@/views/Home/index.vue'),
+        },
+      ],
     },
     {
       path: '/table-demo',
@@ -15,26 +23,50 @@ const router = createRouter({
       redirect: '/table-demo/table',
       children: [
         {
-          path: '/table',
+          path: 'table',
           name: 'Table',
           component: () => import('@/views/Table/index.vue'),
         },
       ],
     },
     {
-      path: '/list',
-      name: 'List',
-      component: () => import('@/views/List/index.vue'),
+      path: '/list-demo',
+      name: 'ListDemo',
+      component: Layout,
+      redirect: '/list-demo/list',
+      children: [
+        {
+          path: 'list',
+          name: 'List',
+          component: () => import('@/views/List/index.vue'),
+        },
+      ],
     },
     {
-      path: '/calendar',
-      name: 'Calendar',
-      component: () => import('@/views/Calendar/index.vue'),
+      path: '/calendar-demo',
+      name: 'CalendarDemo',
+      component: Layout,
+      redirect: '/calendar-demo/calendar',
+      children: [
+        {
+          path: 'calendar',
+          name: 'Calendar',
+          component: () => import('@/views/Calendar/index.vue'),
+        },
+      ],
     },
     {
-      path: '/gallery',
-      name: 'Gallery',
-      component: () => import('@/views/Gallery/index.vue'),
+      path: '/gallery-demo',
+      name: 'GalleryDemo',
+      component: Layout,
+      redirect: '/gallery-demo/gallery',
+      children: [
+        {
+          path: 'gallery',
+          name: 'Gallery',
+          component: () => import('@/views/Gallery/index.vue'),
+        },
+      ],
     },
   ],
 })
