@@ -1,6 +1,6 @@
 <template>
   <div class="calendar-container">
-    <Calendar :data-source="data" :schema="collectionSchema.schema" />
+    <calendar-view :data-source="data" :schema="collectionSchema.schema" />
   </div>
 </template>
 

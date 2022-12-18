@@ -13,9 +13,13 @@
           :column-key="column.name"
           :key="column.name"
           :prop="column.name"
-          :label="toFristLetterUpper(column.name)"
           :width="column.width || 200"
         >
+          <template #header
+            ><property-icon
+              :property-type="column.type"
+              :property-name="column.name"
+          /></template>
           <template #default="scope">
             <template v-if="column.type === 'Title'">
               <div class="editable-cell">
@@ -42,7 +46,10 @@
                   /></el-icon>
                 </div>
 
-                <div v-else class="editable-cell-text-wrapper">
+                <div
+                  v-else
+                  class="editable-cell-text-wrapper editable-cell-title"
+                >
                   <span>{{ scope.row.properties[column.name] }}</span>
                   <div class="editable-cell-text-icon">
                     <el-icon @click="openDrawer(scope.row.id)"
@@ -329,6 +336,7 @@ const drawerRef = ref(null)
 const rowData = computed({
   get: () => formData.data.find((item) => item.id === currentIndex.value),
   set: (newVal) => {
+    console.log(newVal)
     formData.data.filter((item) => item.id === currentIndex.value)[0] = newVal
   },
 })
@@ -346,10 +354,6 @@ const openDrawer = (id) => {
   currentIndex.value = id
   console.log(currentIndex.value)
   drawerRef.value.handleOpen()
-}
-
-const toFristLetterUpper = (s) => {
-  return s.replace(s.charAt(0), s.charAt(0).toUpperCase())
 }
 
 const edit = (id, field) => {
@@ -406,6 +410,7 @@ const handleUpdate = (id, page) => {
           }
         }
         .editable-cell {
+          position: relative;
           .editable-cell-input-wrapper {
             display: flex;
             align-items: center;
@@ -424,19 +429,29 @@ const handleUpdate = (id, page) => {
           .editable-cell-text-wrapper {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            padding: 0 18px 0 0;
             .editable-cell-text-icon {
+              position: absolute;
               display: flex;
+              right: 0;
               .el-icon {
-                display: none;
-                font-size: 20px;
-                padding: 0px 2px 0px 5px;
-                cursor: pointer;
-                &:hover {
-                  color: #108ee9;
-                }
+                position: static;
               }
             }
+            .el-icon {
+              position: absolute;
+              right: 0px;
+              display: none;
+              font-size: 18px;
+              // padding: 0px 2px 0px 5px;
+              cursor: pointer;
+              &:hover {
+                color: #108ee9;
+              }
+            }
+          }
+          .editable-cell-title {
+            padding: 0 36px 0 0;
           }
         }
       }

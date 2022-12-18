@@ -1,10 +1,43 @@
 <template>
   <div class="drawer-form-container">
     <el-drawer v-model="drawerVisible" :show-close="false"
-      ><el-form :model="formData.properties" :rules="rules" ref="formRef">
+      ><el-form
+        :model="formData.properties"
+        :rules="rules"
+        ref="formRef"
+        label-width="100px"
+        label-position="left"
+      >
         <template v-for="item in props.schema" :key="item.name">
-          <el-form-item :label="item.name">
-            <template v-if="item.type === 'Checkbox'"></template>
+          <el-form-item>
+            <template #label
+              ><el-dropdown trigger="click">
+                <property-icon
+                  :property-type="item.type"
+                  :property-name="item.name"
+                />
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item divided>重命名属性</el-dropdown-item>
+                    <el-dropdown-item>删除属性</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown></template
+            >
+
+            <template v-if="item.type === 'Title'">
+              <el-input v-model="formData.properties[item.name]" type="text"
+            /></template>
+            <template v-else-if="item.type === 'Date'">
+              <el-date-picker
+                v-model="formData.properties[item.name]"
+                type="datetime"
+                placeholder="Select date and time"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                format="YYYY/MM/DD HH:mm:ss"
+              >
+              </el-date-picker>
+            </template>
             <template v-else>
               <el-input v-model="formData.properties[item.name]"
             /></template>
@@ -16,7 +49,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -43,20 +76,15 @@ const handleOpen = () => {
 const handleClose = () => {
   drawerVisible.value = false
 }
-const emit = defineEmits(['update:drawerVisible', 'update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 const formRef = ref(null)
 
-const formData = computed(() => {
-  return props.modelValue
-})
-
-watch(
-  formData,
-  (newVal) => {
+const formData = computed({
+  get: () => props.modelValue,
+  set: (newVal) => {
     emit('update:modelValue', newVal)
   },
-  { deep: true } //vue3的监听器的深度监听的配置属性
-)
+})
 
 defineExpose({
   handleOpen,
@@ -64,4 +92,14 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.drawer-form-container {
+  .el-form {
+    :deep(.el-form-item) {
+      label {
+        align-items: center;
+      }
+    }
+  }
+}
+</style>
