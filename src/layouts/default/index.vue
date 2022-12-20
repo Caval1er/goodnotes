@@ -13,18 +13,21 @@
               <el-icon><location /></el-icon>
               <span>首页</span>
             </template>
-
-            <el-sub-menu index="1-2">
-              <template #title>日常计划</template>
-              <el-menu-item index="1-2-1">list view</el-menu-item>
-              <el-menu-item index="1-2-2">table view</el-menu-item>
-            </el-sub-menu>
-            <el-sub-menu index="1-3">
-              <template #title>学习笔记</template>
-              <el-menu-item index="1-3-1">gallery view</el-menu-item>
-              <el-menu-item index="1-3-2">calendar view</el-menu-item>
-            </el-sub-menu>
+            <template v-for="item in asideCollection" :key="item.id">
+              <el-sub-menu :index="'1-' + item.id">
+                <template #title>{{ item.name }}</template>
+                <template v-for="view in item.list">
+                  <el-menu-item :index="'1-' + item.id + '-' + view.id">{{
+                    view.name
+                  }}</el-menu-item>
+                </template>
+              </el-sub-menu>
+            </template>
           </el-sub-menu>
+          <el-menu-item index="2">
+            <el-icon><icon-menu /></el-icon>
+            <span>新建数据</span>
+          </el-menu-item>
         </el-menu></el-aside
       >
       <el-container>
@@ -48,15 +51,20 @@
 import PageContent from '../page/index.vue'
 import { useRoute } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
-
+import { getAsideCollection } from '@/api/collection/index'
 const route = useRoute()
 const breadList = ref([])
+const asideCollection = ref([])
 onMounted(() => {
   const breadRes = Array.prototype.filter.call(route.matched, (item) => {
     return item.name !== 'Home' && item.name !== 'Dashboard'
   })
   console.log(breadRes)
   breadList.value = breadRes
+  getAsideCollection().then((res) => {
+    asideCollection.value = res
+    console.log(res)
+  })
 })
 watch(route, () => {
   const breadRes = Array.prototype.filter.call(route.matched, (item) => {

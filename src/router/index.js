@@ -68,6 +68,19 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/database',
+      name: 'Database',
+      component: Layout,
+      redirect: '/database/page',
+      children: [
+        {
+          path: 'page/:id',
+          name: 'DatabasePage',
+          component: () => import('@/views/TabPage/index.vue'),
+        },
+      ],
+    },
   ],
 })
 

@@ -114,8 +114,8 @@
                     <el-option
                       v-for="item in column.options"
                       :key="item.id"
-                      :name="item.label"
-                      :value="item.value"
+                      :name="item.name"
+                      :value="item.name"
                     ></el-option>
                   </el-select>
 
@@ -132,7 +132,7 @@
                     ></template
                   >
                   <template v-else>
-                    <el-tag>{{ tag.value }}</el-tag>
+                    <!-- <el-tag>{{ tag.value }}</el-tag> -->
                   </template>
                   <el-icon @click="edit(scope.row.id, column.name)"
                     ><Edit
@@ -313,10 +313,21 @@
 
 <script setup>
 import { onMounted, reactive, ref, computed } from 'vue'
-import { getSingleCollectionById } from '@/api/collection/index'
-import { updateProperties, getAllPages } from '@/api/page/index'
+import { updateProperties, getPagesByCollectionId } from '@/api/page/index'
+import { getCollectionViewById } from '@/api/collectionView/index'
 import { cloneDeep } from 'lodash-es'
-const tableColumnScheme = reactive([])
+
+const props = defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
+  collectionId: {
+    type: Number,
+    required: true,
+  },
+})
+const tableColumnScheme = ref([])
 const formData = reactive({
   data: [],
   editableData: {},
@@ -336,16 +347,16 @@ const drawerRef = ref(null)
 const rowData = computed({
   get: () => formData.data.find((item) => item.id === currentIndex.value),
   set: (newVal) => {
-    console.log(newVal)
     formData.data.filter((item) => item.id === currentIndex.value)[0] = newVal
   },
 })
 const formRef = ref(null)
 onMounted(() => {
-  getSingleCollectionById(1, 1).then((res) => {
-    tableColumnScheme.push(...res.schema)
+  getCollectionViewById(props.id).then((res) => {
+    console.log(res)
+    tableColumnScheme.value = res.schema
   })
-  getAllPages().then((res) => {
+  getPagesByCollectionId(props.collectionId).then((res) => {
     formData.data.push(...res)
   })
 })

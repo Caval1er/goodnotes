@@ -18,6 +18,13 @@ service.interceptors.response.use((response) => {
       })
     } else if (code === '301') {
       data.schema = JSON.parse(data.schema)
+    } else if (code === '100') {
+      data = JSON.parse(data)
+    } else if (code === '302') {
+      data = Array.prototype.map.call(data, (item) => {
+        item.schema = JSON.parse(item.schema)
+        return item
+      })
     }
     return data
   }

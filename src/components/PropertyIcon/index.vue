@@ -20,6 +20,9 @@
     <template v-else-if="props.propertyType === 'Checkbox'"
       ><icon-checkbox />
     </template>
+    <template v-else-if="props.propertyType === 'Single_Select'"
+      ><icon-single />
+    </template>
     <span>{{ toFristLetterUpper(props.propertyName) }}</span>
   </div>
 </template>
@@ -32,7 +35,7 @@ const props = defineProps({
   },
   propertyName: {
     type: String,
-    required: true,
+    default: '',
   },
 })
 

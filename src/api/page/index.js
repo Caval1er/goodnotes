@@ -18,3 +18,13 @@ export function getAllPages() {
     method: 'post',
   })
 }
+
+export function getPagesByCollectionId(id) {
+  return httpRequest({
+    url: 'pages/getPagesByCollectionId',
+    method: 'get',
+    params: {
+      id,
+    },
+  })
+}

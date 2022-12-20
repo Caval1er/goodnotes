@@ -31,38 +31,44 @@
     ref="drawerRef"
     v-model="rowData"
     :rules="rules"
-    :schema="props.schema"
+    :schema="schema"
   />
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import dayjs from 'dayjs'
+import { getCollectionViewById } from '@/api/collectionView/index'
+import { getPagesByCollectionId } from '@/api/page/index'
 const calendarRef = ref()
 const selectDate = (val) => {
   calendarRef.value.selectDate(val)
 }
 
 const props = defineProps({
-  dataSource: {
-    type: Array,
-    default() {
-      return []
-    },
+  id: {
+    type: Number,
+    required: true,
   },
-  schema: {
-    type: Array,
-    default() {
-      return {}
-    },
+  collectionId: {
+    type: Number,
+    required: true,
   },
 })
-
+const schema = ref([])
+const dataSource = ref([])
 const rules = reactive({})
-
+onMounted(() => {
+  getCollectionViewById(props.id).then((res) => {
+    schema.value = res.schema
+  })
+  getPagesByCollectionId(props.collectionId).then((res) => {
+    dataSource.value = res
+  })
+})
 const computedDate = computed(() => {
   return function (date) {
-    return Array.prototype.filter.call(props.dataSource, (item) => {
+    return Array.prototype.filter.call(dataSource.value, (item) => {
       return date === dayjs(item.properties.date).format('YYYY-MM-DD')
     })
   }
@@ -75,9 +81,9 @@ const openDrawer = (id) => {
   drawerRef.value.handleOpen()
 }
 const rowData = computed({
-  get: () => props.dataSource.find((item) => item.id === currentIndex.value),
+  get: () => dataSource.value.find((item) => item.id === currentIndex.value),
   set: (newVal) => {
-    props.dataSource.filter((item) => item.id === currentIndex.value)[0] =
+    dataSource.value.filter((item) => item.id === currentIndex.value)[0] =
       newVal
   },
 })
